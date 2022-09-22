@@ -12,13 +12,13 @@ The outputs of the model are probabilities that the sentence belongs to a certai
 
 # Run the App
 
-To run locally, clone the repository, go to the diretory and install the requirements.
+To run locally, clone the repository, go to the project directory and install the requirements.
 
 ```
 pip install -r requirements.txt
 ```
 
-Run the Live Server:
+Go to the application directory and run the Live Server:
 
 ```
 uvicorn app:app
