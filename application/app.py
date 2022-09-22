@@ -7,12 +7,16 @@ import utils
 import numpy as np
 from pydantic import BaseModel
 from typing import List
+import model
 
 # load model
-model = keras.models.load_model(os.path.join(utils._saved_model_root, 'basic_serving_model'))
+try:
+    loaded_model = keras.models.load_model(os.path.abspath(os.path.join(__file__, r"..", utils._saved_model_root, utils._model_directory)))
+except:
+    loaded_model = model.create_and_save_model()
 
 # load enc
-with open('basic_implementation_label_encoder.pkl', 'rb') as loaded_enc:
+with open(os.path.abspath(os.path.join(__file__, r"..", utils.label_encoder_file)), 'rb') as loaded_enc:
     enc = pickle.load(loaded_enc)
 
 class Sentence(BaseModel):
@@ -20,10 +24,11 @@ class Sentence(BaseModel):
 
 app = FastAPI()
 
-@app.post("/basic_implementation/")
+@app.post("/sentence_classification_predict/")
 async def read_sentence(sentences: Sentence):
     sentences_list = sentences.sentences
-    list_of_predictions = model.predict(sentences_list)
+    tokenized_sentences = list(map(utils.tokenize_reviews, sentences_list))
+    list_of_predictions = loaded_model.predict(tokenized_sentences)
 
     output_list = utils.transform_predictions_to_strings(list_of_predictions=list_of_predictions, threshold=utils.threshold)
 

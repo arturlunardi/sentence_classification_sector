@@ -19,8 +19,11 @@ _data_root = r'../../data'
 # Name of the data file
 _data_file = r'dataset.csv'
 
-# Name of the data file
+# name of the saved model directory root
 _saved_model_root = r'saved_models'
+
+# name of the saved model directory
+_model_directory = r'serving_model'
 
 # variables
 text_var = "sentence"
@@ -28,6 +31,15 @@ label_var = "category"
 
 # model threshold
 threshold = 0.3
+
+# labelencoder file name
+label_encoder_file = 'label_encoder.pkl'
+
+# random_state_split_data
+random_state = 0
+
+# test_size to split data
+test_size = 0.2
 
 
 def tokenize_reviews(reviews: str) -> str:
@@ -95,7 +107,7 @@ def load_and_transform_dataset(encode_target_variable: bool=False) -> pd.DataFra
         dataset[label_var] = enc.fit_transform(dataset[label_var])
 
         # saving encoder to use in production
-        with open(os.path.join(__file__, r"..", 'basic_implementation_label_encoder.pkl'), 'wb') as output:
+        with open(os.path.join(__file__, r"..", label_encoder_file), 'wb') as output:
             pickle.dump(enc, output)
 
     return dataset
